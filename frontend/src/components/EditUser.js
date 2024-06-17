@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,11 +8,27 @@ function EditUser(props){
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+      // Funkcja do pobrania danych użytkownika
+      const fetchUserData = async () => {
+          try {
+              const response = await axios.get("http://localhost:8080/api/user");
+              // Aktualizacja stanów newUsername i newPassword na podstawie danych użytkownika
+              setNewUsername(response.data.username);
+
+          } catch (error) {
+              console.log(error);
+              setMessage("Error fetching user data");
+          }
+      };
+      fetchUserData();
+  }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const response = await axios.put("http://localhost:8080/api/tasks", {newUsername, newPassword});
-            navigate('/');
+            const response = await axios.put("http://localhost:8080/api/user", {newUsername, newPassword});
+            //navigate('/');
             //window.location.reload();
         } catch(errors){
             console.log(errors);

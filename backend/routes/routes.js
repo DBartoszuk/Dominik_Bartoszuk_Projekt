@@ -3,6 +3,7 @@ const path = require('path');
 const { registerUser } = require('../controllers/AddUserController');
 const { addTask } = require('../controllers/AddTaskController');
 const { deleteTask } = require('../controllers/DeleteTaskController');
+const { editTask } = require('../controllers/EditTaskController');
 const { body } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -21,30 +22,13 @@ const validateUser = [
     body('password').isLength({ min: 5 }).withMessage('Password must be at least 6 characters long.'),
     body('email').isEmail().withMessage('Invalid email address.')
 ];
-
+// Sprawdzenie czy użytkownik już istnieje w bazie
 const checkIfUserExist = async (username, email) => {
     const nameCheck = await User.findOne({username});
     const emailCheck = await User.findOne({email});
     if(nameCheck || emailCheck) return true;
     else return false;
 }
-
-const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) {
-        return res.status(403).send({ message: 'No token provided.' });
-    }
-
-    jwt.verify(token, 'secret_token', (err, decoded) => {
-        if (err) {
-            return res.status(500).send({ message: 'Failed to authenticate token.' });
-        }
-
-        // Jeśli token jest poprawny, zapisujemy decoded (zawierający user_id) w req.userId
-        req.userId = decoded.id;
-        next();
-    });
-};
 
 // Endpoint rejestracji nowego użytkownika
 router.post('/register', validateUser, async (req, res) => {
@@ -84,22 +68,21 @@ router.post('/login', async (req, res) => {
 })
 
 // Trasa do pobierania danych użytkownika
-router.get('/user', verifyToken, async (req, res) => {
-    try {
-        const userId = req.userId;
+// router.get('/user', verifyToken, async (req, res) => {
+//     try {
+//         const userId = req.userId;
         
-        // Wyszukujemy użytkownika w bazie danych
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' });
-        }
-
-        res.status(200).send(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ message: 'Internal Server Error' });
-    }
-});
+//         // Wyszukujemy użytkownika w bazie danych
+//         const user = await User.findById(userId);
+//         if (!user) {
+//             return res.status(404).send({ message: 'User not found' });
+//         }
+//         res.status(200).json({ username: user.username });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send({ message: 'Internal Server Error' });
+//     }
+// });
 
 router.get('/tasks', async (req, res) => {
     try {
@@ -127,10 +110,14 @@ router.post('/tasks', async (req, res) => {
     }
 });
 
-router.put('/tasks', (req, res) => {
+router.put('/tasks/:id', async (req, res) => {
     // Kod do aktualizacji zadania
-    
-    res.send(`Zadanie o ID ${req.params.id} zaktualizowane`);
+    try {
+        await editTask(req, res); 
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 router.delete('/tasks', async (req, res) => {

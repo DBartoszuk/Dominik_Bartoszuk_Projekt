@@ -56,7 +56,6 @@ function App() {
                 <>
                   <Nav.Link as={Link} to="/">HomePage</Nav.Link>
                   <Nav.Link as={Link} to="/add-task">Add Task</Nav.Link>
-                  <Nav.Link as={Link} to="/edit-user">Edit User</Nav.Link>
                   <Button variant="outline-danger" onClick={handleLogout}>Logout</Button>
                 </>
               )}
@@ -68,7 +67,6 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage checkToken={checkToken} />} />
         <Route path="/add-task" element={<AddTask/>} />
-        <Route path="/edit-user" element={<EditUser/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
       </Routes>
