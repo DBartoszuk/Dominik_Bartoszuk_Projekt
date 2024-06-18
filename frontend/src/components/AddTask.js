@@ -9,10 +9,39 @@ function AddTask(props){
     const [date, setDate] = useState(new Date().toISOString().substr(0, 10));
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
     const userId = props.userId;
+
+    const validate = () => {
+      let errors = {};
+  
+      if (!taskname) {
+          errors.taskName = "Task name is required";
+      }
+  
+      if (!description) {
+          errors.description = "Description is required";
+      }
+  
+      if (!priority) {
+          errors.priority = "Priority is required";
+      }
+  
+      if (!date) {
+          errors.date = "Date is required";
+      }
+  
+      return errors;
+  };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length > 0){
+            setErrors(validationErrors);
+            return;
+        }
+
         try{
             const response = await axios.post("http://localhost:8080/api/tasks", {taskname, description, priority, date, userId});
             //console.log("Wszystko poszło fajnie", response);
@@ -48,7 +77,8 @@ function AddTask(props){
                                   value={taskname}
                                   onChange={(e) => setTaskName(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example1c">Task</label>
+                                <label className="form-label" htmlFor="form3Example1c">Task</label><br/>
+                                {errors.taskName && <span className="text-danger">{errors.taskName}</span>}
                               </div>
                             </div>
 
@@ -62,7 +92,8 @@ function AddTask(props){
                                   value={description}
                                   onChange={(e) => setDescription(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example2c">Description</label>
+                                <label className="form-label" htmlFor="form3Example2c">Description</label><br/>
+                                {errors.description && <span className="text-danger">{errors.description}</span>}
                               </div>
                             </div>
 
@@ -93,7 +124,8 @@ function AddTask(props){
                                     <option value="9">9</option>
                                     <option value="10">10</option>
                                 </select>
-                                <label className="form-label" htmlFor="form3Example4c">Priority</label>
+                                <label className="form-label" htmlFor="form3Example4c">Priority</label><br/>
+                                {errors.priority && <span className="text-danger">{errors.priority}</span>}
                               </div>
                             </div>
 
@@ -107,7 +139,8 @@ function AddTask(props){
                                   value={date} 
                                   onChange={(e) => setDate(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example5c">Date</label>
+                                <label className="form-label" htmlFor="form3Example5c">Date</label><br/>
+                                {errors.date && <span className="text-danger">{errors.date}</span>}
                               </div>
                             </div>
 

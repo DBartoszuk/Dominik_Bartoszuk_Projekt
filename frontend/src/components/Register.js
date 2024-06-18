@@ -7,10 +7,34 @@ function Register(props){
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();  // Initialize useNavigate
+
+    const validate = () => {
+      let errors = {};
+  
+      if (!username) {
+          errors.username = "Username is required";
+      }
+  
+      if (!password) {
+          errors.password = "Password is required";
+      }
+
+      if (!email) {
+        errors.email = "Email is required";
+    }
+  
+      return errors;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length > 0){
+          setErrors(validationErrors);
+          return;
+        }
         try{
           console.log("Wewnątrz handleSubmit");
           const response = await axios.post('http://localhost:8080/api/register', { username, email, password });
@@ -49,7 +73,8 @@ function Register(props){
                                   value={username}
                                   onChange={(e) => setUsername(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example1c">Username</label>
+                                <label className="form-label" htmlFor="form3Example1c">Username</label><br/>
+                                {errors.username && <span className="text-danger">{errors.username}</span>}
                               </div>
                             </div>
 
@@ -63,7 +88,8 @@ function Register(props){
                                   value={email}
                                   onChange={(e) => setEmail(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example2c">Email</label>
+                                <label className="form-label" htmlFor="form3Example2c">Email</label><br/>
+                                {errors.email && <span className="text-danger">{errors.email}</span>}
                               </div>
                             </div>
 
@@ -77,7 +103,8 @@ function Register(props){
                                   value={password} 
                                   onChange={(e) => setPassword(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example4c">Password</label>
+                                <label className="form-label" htmlFor="form3Example4c">Password</label><br/>
+                                {errors.password && <span className="text-danger">{errors.password}</span>}
                               </div>
                             </div>
 
@@ -88,7 +115,7 @@ function Register(props){
                           </form>
                         </div>
                         <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                          <img src="https://www.shutterstock.com/image-illustration/coronavirus-covid19-under-microscope-3d-600nw-1643947495.jpg"
+                          <img src="https://images.pexels.com/photos/760710/pexels-photo-760710.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
                             className="img-fluid" alt="A notepad"/>
                         </div>
                       </div>

@@ -6,10 +6,30 @@ function Login(props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();  // Initialize useNavigate
+
+  const validate = () => {
+    let errors = {};
+
+    if (!username) {
+        errors.username = "Username is required";
+    }
+
+    if (!password) {
+        errors.password = "Password is required";
+    }
+
+    return errors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0){
+      setErrors(validationErrors);
+      return;
+    }
     try {
       const response = await axios.post('http://localhost:8080/api/login', { username, password });
       localStorage.setItem('token', response.data.token);
@@ -48,7 +68,8 @@ function Login(props) {
                                   value={username}
                                   onChange={(e) => setUsername(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example1c">Username</label>
+                                <label className="form-label" htmlFor="form3Example1c">Username</label><br/>
+                                {errors.username && <span className="text-danger">{errors.username}</span>}
                               </div>
                             </div>
 
@@ -62,7 +83,8 @@ function Login(props) {
                                   value={password} 
                                   onChange={(e) => setPassword(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example4c">Password</label>
+                                <label className="form-label" htmlFor="form3Example4c">Password</label><br/>
+                                {errors.password && <span className="text-danger">{errors.password}</span>}
                               </div>
                             </div>
 
@@ -73,7 +95,7 @@ function Login(props) {
                           </form>
                         </div>
                         <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                          <img src="https://www.shutterstock.com/image-illustration/coronavirus-covid19-under-microscope-3d-600nw-1643947495.jpg"
+                          <img src="https://media.istockphoto.com/id/1329003941/photo/agenda-organize-with-color-coding-sticky-for-time-management.jpg?s=612x612&w=0&k=20&c=MXeOW0DlqYJQQ_bQmntR5jVhW5iP5rJ0zXxLrK10BW4="
                             className="img-fluid" alt="A notepad"/>
                         </div>
                       </div>

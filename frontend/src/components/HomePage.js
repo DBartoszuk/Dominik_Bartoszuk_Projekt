@@ -163,7 +163,7 @@ const HomePage = (props) => {
                                   value={editTaskName}
                                   onChange={(e) => setEditTaskName(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example1c">Task</label>
+                                <label className="form-label" htmlFor="form3Example1c">Task</label><br/>
                                 {errors.taskName && <span className="text-danger">{errors.taskName}</span>}
                               </div>
                             </div>
@@ -178,7 +178,7 @@ const HomePage = (props) => {
                                   value={editDescription}
                                   onChange={(e) => setEditDescription(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example2c">Description</label>
+                                <label className="form-label" htmlFor="form3Example2c">Description</label><br/>
                                 {errors.description && <span className="text-danger">{errors.description}</span>}
                               </div>
                             </div>
@@ -203,7 +203,7 @@ const HomePage = (props) => {
                                     <option value="9">9</option>
                                     <option value="10">10</option>
                                 </select>
-                                <label className="form-label" htmlFor="form3Example4c">Priority</label>
+                                <label className="form-label" htmlFor="form3Example4c">Priority</label><br/>
                                 {errors.priority && <span className="text-danger">{errors.priority}</span>}
                               </div>
                             </div>
@@ -218,7 +218,7 @@ const HomePage = (props) => {
                                   value={editDate} 
                                   onChange={(e) => setEditDate(e.target.value)}
                                 />
-                                <label className="form-label" htmlFor="form3Example5c">Date</label>
+                                <label className="form-label" htmlFor="form3Example5c">Date</label><br/>
                                 {errors.date && <span className="text-danger">{errors.date}</span>}
                               </div>
                             </div>
