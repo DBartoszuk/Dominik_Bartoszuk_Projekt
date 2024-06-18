@@ -77,12 +77,12 @@ function Login(props) {
                             className="img-fluid" alt="A notepad"/>
                         </div>
                       </div>
+                      {message && <p>{message}</p>}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            {message && <p>{message}</p>}
           </section>
       </>
     ) : (

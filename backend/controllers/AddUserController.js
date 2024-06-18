@@ -14,7 +14,6 @@ async function registerUser(req, res) {
     const { username, password, email } = req.body;
 
     try {
-        console.log("W controlerze, początek try")
         // Haszowanie hasła przed zapisaniem do bazy danych
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -24,7 +23,6 @@ async function registerUser(req, res) {
             password: hashedPassword,
             email: email
         });
-        console.log("W kontrolerze, po utworzeniu nowego uzytkownika")
 
         const token = jwt.sign({id: user._id}, 'secret_token', { expiresIn: '1h' });
         console.log("W kontrolerze, po utworzeniu tokenu")

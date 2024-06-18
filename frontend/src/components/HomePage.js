@@ -11,6 +11,7 @@ const HomePage = (props) => {
     const [editPriority, setEditPriority] = useState('');
     const [editDate, setEditDate] = useState('');
     const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState({});
 
     const deleteTask = async (id) => {
         try {
@@ -26,8 +27,36 @@ const HomePage = (props) => {
         }
     };
 
+    const validate = () => {
+        let errors = {};
+    
+        if (!editTaskName) {
+            errors.taskName = "Task name is required";
+        }
+    
+        if (!editDescription) {
+            errors.description = "Description is required";
+        }
+    
+        if (!editPriority) {
+            errors.priority = "Priority is required";
+        }
+    
+        if (!editDate) {
+            errors.date = "Date is required";
+        }
+    
+        return errors;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length > 0){
+            setErrors(validationErrors);
+            return;
+        }
+
         try {
             const response = await axios.put(`http://localhost:8080/api/tasks/${currentID}`, {
                 id: currentID,
@@ -47,7 +76,12 @@ const HomePage = (props) => {
 
     const fetchTasks = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/tasks');
+            const token = localStorage.getItem('token');
+            const response = await axios.get('http://localhost:8080/api/tasks', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setTasks(response.data);
         } catch (error) {
             console.error('Error fetching tasks:', error);
@@ -130,6 +164,7 @@ const HomePage = (props) => {
                                   onChange={(e) => setEditTaskName(e.target.value)}
                                 />
                                 <label className="form-label" htmlFor="form3Example1c">Task</label>
+                                {errors.taskName && <span className="text-danger">{errors.taskName}</span>}
                               </div>
                             </div>
 
@@ -144,6 +179,7 @@ const HomePage = (props) => {
                                   onChange={(e) => setEditDescription(e.target.value)}
                                 />
                                 <label className="form-label" htmlFor="form3Example2c">Description</label>
+                                {errors.description && <span className="text-danger">{errors.description}</span>}
                               </div>
                             </div>
 
@@ -168,6 +204,7 @@ const HomePage = (props) => {
                                     <option value="10">10</option>
                                 </select>
                                 <label className="form-label" htmlFor="form3Example4c">Priority</label>
+                                {errors.priority && <span className="text-danger">{errors.priority}</span>}
                               </div>
                             </div>
 
@@ -182,6 +219,7 @@ const HomePage = (props) => {
                                   onChange={(e) => setEditDate(e.target.value)}
                                 />
                                 <label className="form-label" htmlFor="form3Example5c">Date</label>
+                                {errors.date && <span className="text-danger">{errors.date}</span>}
                               </div>
                             </div>
 
@@ -191,10 +229,10 @@ const HomePage = (props) => {
                           </form>
                         </div>
                       </div>
+                      {message && <p>{message}</p>}
                 </div>
               </div>
             </div>
-            {message && <p>{message}</p>}
           </section>
                         </>
                     )}

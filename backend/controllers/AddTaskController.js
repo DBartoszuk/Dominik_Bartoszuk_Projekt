@@ -9,14 +9,15 @@ async function addTask(req, res) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const {taskname, description, priority, date} = req.body;
+    const {taskname, description, priority, date, userId} = req.body;
     try{
         // Tworzenie nowego zadania
         const newTask = await Task.create({
             taskname: taskname,
             description: description,
             priority: priority,
-            date: date
+            date: date,
+            userID: userId
         });
 
         // Zwrot odpowiedzi z nowym zadaniem

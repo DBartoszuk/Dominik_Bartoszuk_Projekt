@@ -9,12 +9,13 @@ function AddTask(props){
     const [date, setDate] = useState(new Date().toISOString().substr(0, 10));
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const userId = props.userId;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const response = await axios.post("http://localhost:8080/api/tasks", {taskname, description, priority, date});
-            console.log("Wszystko poszło fajnie", response);
+            const response = await axios.post("http://localhost:8080/api/tasks", {taskname, description, priority, date, userId});
+            //console.log("Wszystko poszło fajnie", response);
             setMessage('Task added successfully!');
             navigate('/');
             //window.location.reload();
@@ -116,10 +117,10 @@ function AddTask(props){
                           </form>
                         </div>
                       </div>
+                      {message && <p>{message}</p>}
                 </div>
               </div>
             </div>
-            {message && <p>{message}</p>}
           </section>
         </div>
     );

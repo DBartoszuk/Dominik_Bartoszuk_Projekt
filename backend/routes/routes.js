@@ -29,10 +29,24 @@ const checkIfUserExist = async (username, email) => {
     if(nameCheck || emailCheck) return true;
     else return false;
 }
+//Pobieranie ID zalogowanego użytkownika
+const authenticateToken = (req, res, next) => {
+    const token = req.header('Authorization').replace('Bearer ', '');
+    if (!token) {
+        return res.status(401).send({ error: 'No token provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'secret_token');
+        req.userId = decoded.id;
+        next();
+    } catch (error) {
+        res.status(401).send({ error: 'Invalid token' });
+    }
+};
 
 // Endpoint rejestracji nowego użytkownika
 router.post('/register', validateUser, async (req, res) => {
-    console.log("Wewnatrz routera");
     const {username, email} = req.body;
     const userExists = await checkIfUserExist(username, email);
     if(!userExists){
@@ -84,10 +98,11 @@ router.post('/login', async (req, res) => {
 //     }
 // });
 
-router.get('/tasks', async (req, res) => {
+router.get('/tasks', authenticateToken, async (req, res) => {
     try {
       //Pobieranie danych z bazy
-      const tasks = await Task.find({});
+      const tasks = await Task.find({ userID: req.userId });
+      //const tasks = await Task.find({});
       // Wysłanie odpowiedzi z danymi
       res.json(tasks);
     } catch (error) {
@@ -113,6 +128,9 @@ router.post('/tasks', async (req, res) => {
 router.put('/tasks/:id', async (req, res) => {
     // Kod do aktualizacji zadania
     try {
+        const {taskname, description} = req.body;
+        if(taskname == "") res.status(400).send({message: "No name"});
+        if(description == "") res.status(400).send({message: "No description"});
         await editTask(req, res); 
     } catch (error) {
         console.log(error);
